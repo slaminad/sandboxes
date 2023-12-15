@@ -82,9 +82,9 @@ resource "nuon_app_sandbox" "main" {
 
 The standard Nuon sandbox, that creates a new EKS cluster to provision an app.
 
-### `aws-eks-byoc-vpc`
+### `aws-eks-byovpc`
 
-**Note** coming soon.
+Provisions an EKS cluster into an existing VPC.
 
 ## Inputs
 

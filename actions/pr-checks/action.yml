@@ -1,0 +1,32 @@
+---
+name: pr-check
+description: |
+  Runs Nuon standard PR checks
+author: "@nuonco/team"
+
+inputs:
+  github_token:
+    description: "GITHUB_TOKEN"
+    default: "${{ github.token }}"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check for large files
+      uses: actions-marketplace-validations/ActionsDesk_lfs-warning@master
+      if: always()
+      id: lfs
+      with:
+        filesizelimit: 5MB
+        token: ${{ inputs.github_token }}
+
+    - name: Lint pull request title
+      if: always()
+      id: title
+      uses: jef/conventional-commits-pr-action@v1
+      with:
+        token: ${{ inputs.github_token }}
+
+branding:
+  icon: "check"
+  color: "cyan"
