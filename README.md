@@ -82,9 +82,55 @@ resource "nuon_app_sandbox" "main" {
 
 The standard Nuon sandbox, that creates a new EKS cluster to provision an app.
 
+```hcl
+resource "nuon_app_sandbox" "main" {
+  app_id = nuon_app.main.id
+  terraform_version = "v1.6.3"
+
+  public_repo = {
+    repo = "nuonco/sandboxes"
+    branch = "main"
+    directory = "aws-eks"
+  }
+
+  input {
+    name = "eks_version"
+    value = "1.28"
+  }
+}
+```
+
 ### `aws-eks-byovpc`
 
 Provisions an EKS cluster into an existing VPC.
+
+```hcl
+resource "nuon_app_sandbox" "main" {
+  app_id = nuon_app.main.id
+  terraform_version = "v1.6.3"
+
+  public_repo = {
+    repo = "nuonco/sandboxes"
+    branch = "main"
+    directory = "aws-eks-byovpc"
+  }
+
+  input {
+    name  = "install_name"
+    value = "my_install"
+  }
+
+  input {
+    name  = "vpc_id"
+    value = "vpc-123"
+  }
+
+  input {
+    name  = "eks_version"
+    value = "1.28"
+  }
+}
+```
 
 ## Inputs
 
