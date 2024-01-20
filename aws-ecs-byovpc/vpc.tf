@@ -50,6 +50,6 @@ data "aws_subnet" "public" {
 }
 
 data "aws_security_group" "default" {
-  name = "default"
+  name   = "default"
   vpc_id = local.vpc_id
 }

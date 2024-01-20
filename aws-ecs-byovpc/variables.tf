@@ -1,5 +1,9 @@
 locals {
-  tags = merge({ nuon_id = var.nuon_id }, var.tags)
+  prefix         = (var.prefix_override != "" ? var.prefix_override : var.nuon_id)
+  install_region = var.region
+  tags           = merge({ nuon_id = var.nuon_id }, var.tags)
+  nuon_id        = var.nuon_id
+  cluster_name   = (var.prefix_override != "" ? var.prefix_override : var.nuon_id)
 
   /* external_dns = { */
   /*   registry           = "txt" */
@@ -8,11 +12,17 @@ locals {
   /*   triggerLoopOnEvent = true */
   /*   interval           = "15m" */
   /* } */
+}
 
-  vars = {
-    id     = var.nuon_id
-    region = var.region
-  }
+variable "prefix_override" {
+  type        = string
+  description = "The resource prefix to override, otherwise defaults to the nuon install id"
+  default     = ""
+}
+
+variable "vpc_id" {
+  type        = string
+  description = "The ID of VPC to deploy the EKS cluster to"
 }
 
 variable "nuon_id" {
@@ -40,45 +50,6 @@ variable "region" {
   }
 }
 
-variable "cluster_name" {
-  type        = string
-  description = "The name of the EKS cluster. Will use the install ID by default."
-  default     = ""
-}
-
-variable "cluster_version" {
-  type        = string
-  description = "The Kubernetes version to use for the EKS cluster."
-  default     = "1.28"
-}
-
-variable "min_size" {
-  type        = number
-  default     = 2
-  description = "The minimum number of nodes in the managed node group."
-}
-
-variable "external_access_role_arns" {
-  type        = list(string)
-  description = "Roles for external access to the cluster."
-}
-
-variable "admin_access_role_arn" {
-  description = "Optional role to provide admin access to the cluster."
-  type        = string
-  default     = ""
-}
-
-variable "waypoint_odr_namespace" {
-  type        = string
-  description = "Namespace that the ODR iam role's service account presides."
-}
-
-variable "waypoint_odr_service_account_name" {
-  type        = string
-  description = "Service account that the ODR iam role should be assumable from."
-}
-
 // NOTE: if you would like to create an internal load balancer, with TLS, you will have to use the public domain.
 variable "internal_root_domain" {
   type        = string
@@ -88,4 +59,9 @@ variable "internal_root_domain" {
 variable "public_root_domain" {
   type        = string
   description = "public root domain."
+}
+
+variable "nuon_runner_install_trust_iam_role_arn" {
+  type        = string
+  description = "IAM role to grant Nuon access to install the runner."
 }
