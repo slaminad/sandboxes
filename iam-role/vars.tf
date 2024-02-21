@@ -16,3 +16,9 @@ variable "sandbox" {
       error_message = "${var.sandbox} is not a valid sandbox"
     }
 }
+
+variable "branch" {
+  type = string
+  default = "main"
+  description = "branch to load permissions from"
+}
