@@ -171,6 +171,23 @@ resource "nuon_app_sandbox" "main" {
 }
 ```
 
+### `azure-aks`
+
+Creates a new VPN and an AKS cluster.
+
+```hcl
+resource "nuon_app_sandbox" "main" {
+  app_id = nuon_app.main.id
+  terraform_version = "v1.6.3"
+
+  public_repo = {
+    repo = "nuonco/sandboxes"
+    branch = "main"
+    directory = "azure-aks"
+  }
+}
+```
+
 ## Inputs
 
 Any value that is added as an `input` is accessible as a terraform variable. For instance, if your `app_sandbox` has the following input defined:
