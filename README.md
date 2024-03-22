@@ -132,6 +132,45 @@ resource "nuon_app_sandbox" "main" {
 }
 ```
 
+### `aws-ecs`
+
+Creates a new VPC and an ECS Fargate cluster.
+
+```hcl
+resource "nuon_app_sandbox" "main" {
+  app_id = nuon_app.main.id
+  terraform_version = "v1.6.3"
+
+  public_repo = {
+    repo = "nuonco/sandboxes"
+    branch = "main"
+    directory = "aws-ecs"
+  }
+}
+```
+
+### `aws-ecs-byovpc`
+
+Creates an AWS Fargate cluster in an existing VPC.
+
+```hcl
+resource "nuon_app_sandbox" "main" {
+  app_id = nuon_app.main.id
+  terraform_version = "v1.6.3"
+
+  public_repo = {
+    repo = "nuonco/sandboxes"
+    branch = "main"
+    directory = "aws-ecs-byovpc"
+  }
+
+  input {
+    name  = "vpc_id"
+    value = "vpc-123"
+  }
+}
+```
+
 ## Inputs
 
 Any value that is added as an `input` is accessible as a terraform variable. For instance, if your `app_sandbox` has the following input defined:
