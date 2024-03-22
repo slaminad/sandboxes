@@ -41,10 +41,13 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           custom_tag: ${{ steps.semver.outputs.nextStrict }}
 
+  provision_canary:
+    name: Provision canary
+    runs-on: ubuntu-latest
+    steps:
       - name: Provision canary
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.NUON_BOT_GITHUB_TOKEN }}
           repository: powertoolsdev/mono
           event-type: provision_canary
-          client-payload: '{"version": "${{ inputs.tag }}" }'
