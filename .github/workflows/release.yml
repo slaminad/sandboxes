@@ -51,3 +51,4 @@ jobs:
           token: ${{ secrets.NUON_BOT_GITHUB_TOKEN }}
           repository: powertoolsdev/mono
           event-type: provision_canary
+          client-payload: '{"sandbox_mode": false}'
