@@ -4,14 +4,6 @@ locals {
   tags           = merge({ nuon_id = var.nuon_id }, var.tags)
   nuon_id        = var.nuon_id
   cluster_name   = (var.prefix_override != "" ? var.prefix_override : var.nuon_id)
-
-  /* external_dns = { */
-  /*   registry           = "txt" */
-  /*   provider           = "aws" */
-  /*   policy             = "sync" */
-  /*   triggerLoopOnEvent = true */
-  /*   interval           = "15m" */
-  /* } */
 }
 
 variable "prefix_override" {

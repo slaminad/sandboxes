@@ -1,70 +1,68 @@
 output "runner" {
   value = {
-    runner_iam_role_arn  = module.runner_iam_role.iam_role_arn
-    odr_iam_role_arn     = module.odr_iam_role.iam_role_arn
-    install_iam_role_arn = module.install_iam_role.iam_role_arn
+    runner_iam_role_arn  = module.sandbox.runner.runner_iam_role_arn
+    odr_iam_role_arn     = module.sandbox.runner.odr_iam_role_arn
+    install_iam_role_arn = module.sandbox.runner.install_iam_role_arn
   }
 }
 
 output "ecs_cluster" {
   value = {
-    arn  = module.ecs_cluster.cluster_arn,
-    id   = module.ecs_cluster.cluster_id,
-    name = module.ecs_cluster.cluster_name
+    arn  = module.sandbox.ecs_cluster.arn
+    id   = module.sandbox.ecs_cluster.id
+    name = module.sandbox.ecs_cluster.name
   }
 }
 
 output "vpc" {
-  // NOTE: these are declared here -
-  // https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest?tab=outputs
   value = {
-    name = module.vpc.name
-    id   = module.vpc.vpc_id
-    cidr = module.vpc.vpc_cidr_block
-    azs  = module.vpc.azs
+    name = module.sandbox.vpc.name
+    id   = module.sandbox.vpc.id
+    cidr = module.sandbox.vpc.cidr
+    azs  = module.sandbox.vpc.azs
 
-    private_subnet_cidr_blocks = module.vpc.private_subnets_cidr_blocks
-    private_subnet_ids         = module.vpc.private_subnets
+    private_subnet_cidr_blocks = module.sandbox.vpc.private_subnet_cidr_blocks
+    private_subnet_ids         = module.sandbox.vpc.private_subnet_ids
 
-    public_subnet_cidr_blocks = module.vpc.public_subnets_cidr_blocks
-    public_subnet_ids         = module.vpc.public_subnets
+    public_subnet_cidr_blocks = module.sandbox.vpc.public_subnet_cidr_blocks
+    public_subnet_ids         = module.sandbox.vpc.public_subnet_ids
 
-    default_security_group_id = aws_security_group.runner.id
-    # default_security_group_arn = aws_security_group.runner.arn
-    db_subnet_group_name = module.vpc.database_subnet_group_name
-    db_subnet_group_id   = module.vpc.database_subnet_group
+    default_security_group_id = module.sandbox.vpc.default_security_group_id
+    # default_security_group_arn = module.sandbox.vpc.default_security_group_arn
+    db_subnet_group_name = module.sandbox.vpc.db_subnet_group_name
+    db_subnet_group_id   = module.sandbox.vpc.db_subnet_group_id
   }
 }
 
 output "account" {
   value = {
-    id     = data.aws_caller_identity.current.account_id
-    region = var.region
+    id     = module.sandbox.account.id
+    region = module.sandbox.account.region
   }
 }
 
 output "ecr" {
   value = {
-    repository_url  = module.ecr.repository_url
-    repository_arn  = module.ecr.repository_arn
-    repository_name = local.prefix
-    registry_id     = module.ecr.repository_registry_id
-    registry_url    = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com"
+    repository_url  = module.sandbox.ecr.repository_url
+    repository_arn  = module.sandbox.ecr.repository_arn
+    repository_name = module.sandbox.ecr.repository_name
+    registry_id     = module.sandbox.ecr.registry_id
+    registry_url    = module.sandbox.ecr.registry_url
   }
 }
 
 output "public_domain" {
   value = {
-    nameservers = aws_route53_zone.public.name_servers
-    name        = aws_route53_zone.public.name
-    zone_id     = aws_route53_zone.public.id
+    nameservers = module.sandbox.public_domain.nameservers
+    name        = module.sandbox.public_domain.name
+    zone_id     = module.sandbox.public_domain.zone_id
   }
 }
 
 output "internal_domain" {
   value = {
-    nameservers = aws_route53_zone.internal.name_servers
-    name        = aws_route53_zone.internal.name
-    zone_id     = aws_route53_zone.internal.id
+    nameservers = module.sandbox.internal_domain.nameservers
+    name        = module.sandbox.internal_domain.name
+    zone_id     = module.sandbox.internal_domain.zone_id
   }
 }
