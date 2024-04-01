@@ -1,7 +1,6 @@
 module "sandbox" {
-  # source  = "nuonco/aks-byovpn-sandbox/azure"
-  # version = "1.0.0"
-  source = "../../terraform-azure-aks-byovpn-sandbox"
+  source  = "nuonco/aks-byovpn-sandbox/azure"
+  version = "1.0.2"
 
   network_name        = var.network_name
   resource_group_name = var.resource_group_name
