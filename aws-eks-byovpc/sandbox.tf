@@ -1,6 +1,6 @@
 module "sandbox" {
   source  = "nuonco/eks-byovpc-sandbox/aws"
-  version = "1.0.2"
+  version = "1.0.5"
 
   vpc_id                = var.vpc_id
   install_name          = var.install_name

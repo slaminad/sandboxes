@@ -1,6 +1,6 @@
 module "sandbox" {
   source  = "nuonco/ecs-sandbox/aws"
-  version = "1.1.3"
+  version = "1.2.0"
 
   prefix_override = var.prefix_override
 

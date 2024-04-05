@@ -1,6 +1,6 @@
 module "sandbox" {
   source  = "nuonco/ecs-byovpc-sandbox/aws"
-  version = "1.0.2"
+  version = "1.0.4"
 
   prefix_override = var.prefix_override
   vpc_id          = var.vpc_id
