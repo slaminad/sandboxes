@@ -1,6 +1,6 @@
 module "sandbox" {
   source  = "nuonco/aks-byovpn-sandbox/azure"
-  version = "1.2.1"
+  version = "1.2.2"
 
   network_name        = var.network_name
   resource_group_name = var.resource_group_name
