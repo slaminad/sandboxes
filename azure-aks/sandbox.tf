@@ -1,6 +1,6 @@
 module "sandbox" {
   source  = "nuonco/aks-sandbox/azure"
-  version = "1.3.2"
+  version = "1.3.3"
 
   location             = var.location
   nuon_id              = var.nuon_id
