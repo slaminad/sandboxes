@@ -1,6 +1,6 @@
 module "sandbox" {
   source  = "nuonco/eks-sandbox/aws"
-  version = "1.1.4"
+  version = "1.2.0"
 
   install_name          = var.install_name
   cluster_name          = var.cluster_name
