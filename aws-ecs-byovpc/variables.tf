@@ -17,6 +17,18 @@ variable "vpc_id" {
   description = "The ID of VPC to deploy the ECS cluster to"
 }
 
+variable "private_subnet_ids" {
+  type        = string
+  default     = ""
+  description = "Comma-separated string of IDs of the subnets to create private resources in."
+}
+
+variable "public_subnet_ids" {
+  type        = string
+  default     = ""
+  description = "Comma-separated string of IDs of the subnets to create public resources in."
+}
+
 variable "nuon_id" {
   type        = string
   description = "The nuon id for this install. Used for naming purposes."
