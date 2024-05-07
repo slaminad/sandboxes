@@ -1,6 +1,6 @@
 module "sandbox" {
   source  = "nuonco/eks-sandbox/aws"
-  version = "1.2.0"
+  version = "1.3.0"
 
   install_name          = var.install_name
   cluster_name          = var.cluster_name
@@ -21,6 +21,7 @@ module "sandbox" {
   public_root_domain                = var.public_root_domain
   internal_root_domain              = var.internal_root_domain
   tags                              = var.tags
+  enable_nginx_ingress_controller   = var.enable_nginx_ingress_controller
 
   # Need to explicitly pass in providers, because of no_tags provider.
   providers = {
