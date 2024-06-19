@@ -14,8 +14,8 @@ variable "location" {
 }
 
 variable "access_group_users" {
-  type = list(string)
-  default = ["jon@nuon.co"]
+  type        = list(string)
+  default     = ["jon@nuon.co"]
   description = "List of emails that will have access to the install"
 }
 

@@ -23,6 +23,7 @@ variable "nuon_id" {
 
 variable "assume_role_arn" {
   type        = string
+  default     = ""
   description = "The role arn to assume during provisioning of this sandbox."
 }
 
