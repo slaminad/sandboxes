@@ -34,12 +34,6 @@ variable "nuon_id" {
   description = "The nuon id for this install. Used for naming purposes."
 }
 
-variable "assume_role_arn" {
-  type        = string
-  default     = ""
-  description = "The role arn to assume during provisioning of this sandbox."
-}
-
 variable "tags" {
   type        = map(any)
   description = "List of custom tags to add to the install resources. Used for taxonomic purposes."
@@ -48,11 +42,6 @@ variable "tags" {
 variable "region" {
   type        = string
   description = "The region to launch the cluster in"
-
-  validation {
-    condition     = contains(["us-east-1", "us-east-2", "us-west-1", "us-west-2", ], var.region)
-    error_message = "${var.region} is currently unsupported"
-  }
 }
 
 // NOTE: if you would like to create an internal load balancer, with TLS, you will have to use the public domain.
@@ -66,7 +55,7 @@ variable "public_root_domain" {
   description = "public root domain."
 }
 
-variable "nuon_runner_install_trust_iam_role_arn" {
+variable "runner_install_role" {
   type        = string
-  description = "IAM role to grant Nuon access to install the runner."
+  description = "The role that is used to install the runner, and should be granted access."
 }

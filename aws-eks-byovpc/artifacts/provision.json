@@ -91,6 +91,7 @@
                 "kms:TagResource",
                 "logs:CreateLogGroup",
                 "logs:TagLogGroup",
+                "logs:ListTagsForResource",
                 "logs:DescribeLogGroups",
                 "logs:ListTagsLogGroup",
                 "logs:PutRetentionPolicy",

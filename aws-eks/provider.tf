@@ -3,16 +3,12 @@ locals {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws-iam-authenticator"
     # This requires the aws iam authenticator to be installed locally where Terraform is executed
-    args = ["token", "-i", module.sandbox.cluster.name, "-r", var.assume_role_arn]
+    args = ["token", "-i", module.sandbox.cluster.name]
   }]
 }
 
 provider "aws" {
   region = local.install_region
-
-  assume_role {
-    role_arn = var.assume_role_arn
-  }
 
   default_tags {
     tags = local.tags
@@ -23,10 +19,6 @@ provider "aws" {
 provider "aws" {
   region = local.install_region
   alias  = "no_tags"
-
-  assume_role {
-    role_arn = var.assume_role_arn
-  }
 }
 
 provider "kubernetes" {

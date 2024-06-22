@@ -1,6 +1,5 @@
 nuon_id = "28g232g0an6vh29t6mu7kv3a96"
 region  = "us-east-2"
-# assume_role_arn  = "arn:aws:iam::949309607565:role/nuon-demo-install-access"
 assume_role_arn  = "" # This needs to be set for use from our services but should not be when running locally.
 install_role_arn = "arn:aws:iam::618886478608:role/install-k8s-admin-stage"
 tags = {

@@ -15,16 +15,9 @@ variable "prefix_override" {
 }
 
 # Automatically set by Nuon when provisioned.
-
 variable "nuon_id" {
   type        = string
   description = "The nuon id for this install. Used for naming purposes."
-}
-
-variable "assume_role_arn" {
-  type        = string
-  default     = ""
-  description = "The role arn to assume during provisioning of this sandbox."
 }
 
 variable "tags" {
@@ -48,7 +41,7 @@ variable "public_root_domain" {
   description = "public root domain."
 }
 
-variable "nuon_runner_install_trust_iam_role_arn" {
+variable "runner_install_role" {
   type        = string
-  description = "IAM role to grant Nuon access to install the runner."
+  description = "The role that is used to install the runner, and should be granted access."
 }
