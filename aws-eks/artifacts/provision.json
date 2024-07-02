@@ -11,6 +11,7 @@
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:DescribeSecurityGroupReferences",
+                "ec2:DescribeAddressesAttribute",
                 "ec2:DescribeSecurityGroupRules",
                 "ec2:DescribeSecurityGroups",
                 "ec2:CreateInternetGateway",
