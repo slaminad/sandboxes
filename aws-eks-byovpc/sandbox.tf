@@ -1,6 +1,6 @@
 module "sandbox" {
   source  = "nuonco/eks-byovpc-sandbox/aws"
-  version = "1.2.0"
+  version = "1.2.1"
 
   vpc_id                          = var.vpc_id
   private_subnet_ids              = var.private_subnet_ids
@@ -8,6 +8,7 @@ module "sandbox" {
   install_name                    = var.install_name
   cluster_name                    = var.cluster_name
   eks_version                     = var.eks_version
+  cluster_version                 = var.cluster_version
   min_size                        = var.min_size
   max_size                        = var.max_size
   desired_size                    = var.desired_size
