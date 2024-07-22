@@ -45,3 +45,9 @@ variable "runner_install_role" {
   type        = string
   description = "The role that is used to install the runner, and should be granted access."
 }
+
+variable "enable_public_route53_zone" {
+  type        = string
+  default     = "true"
+  description = "Provision a public Route53 zone."
+}
