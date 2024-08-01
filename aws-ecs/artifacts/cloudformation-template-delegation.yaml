@@ -1,8 +1,12 @@
 Parameters:
   RoleName:
     Type: String
-    Default: "nuon-aws-eks-install-access"
+    Default: "nuon-aws-ecs-install-access"
     Description: "Enter a name for the install role"
+  DelegationRoleARN:
+    Type: String
+    Default: ""
+    Description: "ARN for the role that will be assumed by roles in the trust policy."
 
 Outputs:
   RoleARN:
@@ -10,6 +14,13 @@ Outputs:
     Value: !GetAtt InstallRole.Arn
 
 Resources:
+  # Macro:
+  #   Type: "AWS::CloudFormation::Macro"
+  #   Properties:
+  #     Description: 'Macro for generating a list of entries for a policy.'
+  #     FunctionName: 'arn:aws:lambda:us-west-2:949309607565:function:NuonCFTransformTemplateECSDelegated'
+  #     Name: NuonCFTransformTemplateECSDelegated
+
   InstallRole:
     Type: AWS::IAM::Role
     Properties:
@@ -19,25 +30,14 @@ Resources:
         - Key: "managed-by"
           Value: "nuon"
         - Key: "nuon-sandbox-type"
-          Value: "aws-eks"
+          Value: "aws-ecs"
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
             Action: sts:AssumeRole
             Principal:
-              AWS: arn:aws:iam::676549690856:root
-          - Effect: Allow
-            Action: sts:AssumeRole
-            Principal:
-              AWS: arn:aws:iam::007754799877:root
-          - Effect: Allow
-            Action: sts:AssumeRole
-            Principal:
-              AWS: arn:aws:iam::814326426574:root
-          - Effect: Allow
-            Action: sts:AssumeRole
-            Principal:
-              AWS: arn:aws:iam::766121324316:root
+              AWS: !Ref DelegationRoleARN
+
   ProvisionPolicy:
     Type: AWS::IAM::Policy
     Properties:
@@ -54,20 +54,25 @@ Resources:
               - ec2:AssociateRouteTable
               - ec2:AttachInternetGateway
               - ec2:AuthorizeSecurityGroupEgress
+              - ec2:DescribeAvailabilityZones
               - ec2:AuthorizeSecurityGroupIngress
               - ec2:AuthorizeSecurityGroupIngress
+              - ec2:DescribeAvailabilityZones
               - ec2:DescribeSecurityGroupReferences
               - ec2:DescribeSecurityGroupRules
               - ec2:DescribeSecurityGroups
-              - ec2:DescribeAvailabilityZones
               - ec2:CreateInternetGateway
               - ec2:CreateNatGateway
-              - ec2:CreateNetworkAclEntry
               - ec2:CreateRoute
               - ec2:CreateRouteTable
               - ec2:CreateSecurityGroup
               - ec2:CreateSubnet
               - ec2:CreateTags
+              - rds:CreateDBSubnetGroup
+              - rds:DeleteDBSubnetGroup
+              - rds:AddTagsToResource
+              - rds:ListTagsForResource
+              - rds:DescribeDBSubnetGroups
               - ec2:CreateVpc
               - ec2:CreateLaunchTemplateVersion
               - ec2:CreateLaunchTemplate
@@ -86,28 +91,25 @@ Resources:
               - ec2:DescribeVpcClassicLink
               - ec2:DescribeVpcClassicLinkDnsSupport
               - ec2:DescribeVpcs
+              - ec2:DescribeAvailabilityZones
               - ec2:ModifySubnetAttribute
               - ec2:ModifyVpcAttribute
               - ec2:ModifyLaunchTemplate
               - ec2:RevokeSecurityGroupEgress
               - ec2:RunInstances
+              - ec2:DeleteNetworkAclEntry
+              - ec2:CreateNetworkAclEntry
+              - ecs:CreateCluster
+              - ecs:ListTagsForResource
+              - ecs:TagResource
+              - ecs:DescribeClusters
+              - ecs:DescribeCapacityProviders
+              - ecs:CreateCapacityProvider
+              - ecs:PutClusterCapacityProviders
               - ecr:CreateRepository
               - ecr:DescribeRepositories
               - ecr:ListTagsForResource
               - ecr:TagResource
-              - eks:CreateCluster
-              - eks:DescribeUpdate
-              - eks:UpdateNodegroupVersion
-              - eks:CreateNodegroup
-              - eks:DescribeCluster
-              - eks:TagResource
-              - eks:ListTagsForResource
-              - eks:DescribeNodegroup
-              - eks:ListAddons
-              - eks:CreateAddon
-              - eks:DescribeAddon
-              - eks:DescribeAddonConfiguration
-              - eks:DescribeAddonVersions
               - iam:AttachRolePolicy
               - iam:CreateOpenIDConnectProvider
               - iam:UpdateAssumeRolePolicy
@@ -143,6 +145,7 @@ Resources:
               - logs:ListTagsLogGroup
               - logs:PutRetentionPolicy
               - logs:TagResource
+              - logs:TagsForResource
               - logs:ListTagsForResource
               - route53:ChangeTagsForResource
               - route53:CreateHostedZone
@@ -175,7 +178,6 @@ Resources:
               - ec2:DeleteRouteTable
               - ec2:DeleteSubnet
               - ec2:DeleteTags
-              - ec2:DeleteNetworkAclEntry
               - ec2:DescribeAddresses
               - ec2:DescribeInternetGateways
               - ec2:DescribeLaunchTemplateVersions
@@ -204,11 +206,8 @@ Resources:
               - ecr:DeleteRepository
               - ecr:DescribeRepositories
               - ecr:ListTagsForResource
-              - eks:DeleteCluster
-              - eks:DeleteNodegroup
-              - eks:DescribeCluster
-              - eks:DescribeNodegroup
-              - eks:DeleteAddon
+              - ecs:DeleteCluster
+              - ecs:DeleteCapacityProvider
               - iam:DeleteOpenIDConnectProvider
               - iam:DeletePolicy
               - iam:DeletePolicyVersion
