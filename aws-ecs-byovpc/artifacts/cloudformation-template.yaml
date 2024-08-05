@@ -54,9 +54,9 @@ Resources:
               - ec2:AssociateRouteTable
               - ec2:AttachInternetGateway
               - ec2:AuthorizeSecurityGroupEgress
+              - ec2:AuthorizeSecurityGroupIngress
+              - ec2:AuthorizeSecurityGroupIngress
               - ec2:DescribeAvailabilityZones
-              - ec2:AuthorizeSecurityGroupIngress
-              - ec2:AuthorizeSecurityGroupIngress
               - ec2:DescribeSecurityGroupReferences
               - ec2:DescribeSecurityGroupRules
               - ec2:DescribeSecurityGroups
@@ -71,6 +71,7 @@ Resources:
               - ec2:CreateLaunchTemplateVersion
               - ec2:CreateLaunchTemplate
               - ec2:DescribeAddresses
+              - ec2:DescribeAddressesAttribute
               - ec2:DescribeInternetGateways
               - ec2:DescribeLaunchTemplateVersions
               - ec2:DescribeLaunchTemplates
@@ -84,7 +85,6 @@ Resources:
               - ec2:DescribeVpcClassicLink
               - ec2:DescribeVpcClassicLinkDnsSupport
               - ec2:DescribeVpcs
-              - ec2:DescribeAvailabilityZones
               - ec2:ModifySubnetAttribute
               - ec2:ModifyVpcAttribute
               - ec2:ModifyLaunchTemplate
@@ -136,6 +136,7 @@ Resources:
               - logs:ListTagsLogGroup
               - logs:PutRetentionPolicy
               - logs:TagResource
+              - logs:ListTagsForResource
               - route53:ChangeTagsForResource
               - route53:CreateHostedZone
               - route53:GetChange
