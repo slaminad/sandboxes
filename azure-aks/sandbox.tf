@@ -1,13 +1,12 @@
 module "sandbox" {
   source  = "nuonco/aks-sandbox/azure"
-  version = "1.3.9"
+  version = "1.3.11"
 
   location             = var.location
   nuon_id              = var.nuon_id
   internal_root_domain = var.internal_root_domain
   public_root_domain   = var.public_root_domain
   tags                 = var.tags
-  access_group_users   = var.access_group_users
   cluster_name         = var.cluster_name
   cluster_version      = var.cluster_version
   vm_size              = var.vm_size

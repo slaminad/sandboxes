@@ -1,6 +1,7 @@
 module "sandbox" {
-  source  = "nuonco/ecs-sandbox/aws"
-  version = "1.3.1"
+  # source  = "nuonco/ecs-sandbox/aws"
+  # version = "1.3.1"
+  source = "github.com/nuonco/terraform-aws-ecs-sandbox?ref=ja%2F5504-pin-module-versions"
 
   prefix_override = var.prefix_override
 
