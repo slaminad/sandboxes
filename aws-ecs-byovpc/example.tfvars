@@ -1,7 +1,6 @@
 nuon_id = "28g232g0an6vh29t6mu7kv3a96"
 region  = "us-east-2"
-# assume_role_arn  = "arn:aws:iam::949309607565:role/nuon-demo-install-access"
-install_role_arn = "arn:aws:iam::618886478608:role/install-k8s-admin-stage"
+runner_install_role = "arn:aws:iam::618886478608:role/install-k8s-admin-stage"
 tags = {
   nuon_id              = "28g232g0an6vh29t6mu7kv3a96"
   nuon_install_id      = "28g232g0an6vh29t6mu7kv3a96"

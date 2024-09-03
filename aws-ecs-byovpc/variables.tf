@@ -60,7 +60,7 @@ variable "assume_role_arn" {
   description = "The ARN of the AWS IAM Role to assume during provisioning of the sandbox. Will be set by Nuon during the install provision process."
 }
 
-variable "nuon_runner_install_trust_iam_role_arn" {
+variable "runner_install_role" {
   type        = string
-  description = "The ARN of the AWS IAM Role to grant Nuon access to install the ECS Fargate runner. Will be set by Nuon during the install provision process."
+  description = "The role that is used to install the runner, and should be granted access."
 }
