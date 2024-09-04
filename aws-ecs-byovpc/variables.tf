@@ -55,11 +55,6 @@ variable "public_root_domain" {
   description = "public root domain."
 }
 
-variable "assume_role_arn" {
-  type        = string
-  description = "The ARN of the AWS IAM Role to assume during provisioning of the sandbox. Will be set by Nuon during the install provision process."
-}
-
 variable "runner_install_role" {
   type        = string
   description = "The role that is used to install the runner, and should be granted access."

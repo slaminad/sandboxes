@@ -11,6 +11,5 @@ module "sandbox" {
   tags                 = var.tags
   private_subnet_ids   = var.private_subnet_ids
   public_subnet_ids    = var.public_subnet_ids
-  assume_role_arn      = var.assume_role_arn
   runner_install_role  = var.runner_install_role
 }
