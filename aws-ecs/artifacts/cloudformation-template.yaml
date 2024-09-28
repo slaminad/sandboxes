@@ -143,6 +143,7 @@ Resources:
               - logs:TagLogGroup
               - logs:DescribeLogGroups
               - logs:ListTagsLogGroup
+              - logs:ListTagsForResource
               - logs:PutRetentionPolicy
               - logs:TagResource
               - logs:ListTagsForResource
@@ -156,6 +157,8 @@ Resources:
               - s3:GetObject
               - s3:ListBucket
               - s3:PutObject
+              - ecs:*
+              - application-autoscaling:*
             Resource: "*"
 
   DeprovisionPolicy:

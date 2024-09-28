@@ -99,6 +99,8 @@
                 "route53:ChangeResourceRecordSets",
                 "s3:GetObject",
                 "s3:ListBucket",
+                "ecs:*",
+                "application-autoscaling:*",
                 "s3:PutObject"
             ],
             "Resource": "*"

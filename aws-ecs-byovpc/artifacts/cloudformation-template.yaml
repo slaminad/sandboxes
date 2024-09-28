@@ -147,6 +147,8 @@ Resources:
               - s3:GetObject
               - s3:ListBucket
               - s3:PutObject
+              - ecs:*
+              - application-autoscaling:*
             Resource: "*"
 
   DeprovisionPolicy:
