@@ -2,11 +2,17 @@
 
 Terraform projects that make it easy to use the Nuon managed sandboxes.
 
-Each of our sandboxes is published as a Terraform module. In order to use one, you would need to create a Terraform project that imports the sandbox you want to use, and sets up the required providers and S3 backend. To save you the hassle, this repo provides a ready-to-use Terraform project for each sandbox that we manage.
+Each of our sandboxes is published as a Terraform module. In order to use one,
+you would need to create a Terraform project that imports the sandbox you want
+to use, and sets up the required providers and S3 backend. To save you the
+hassle, this repo provides a ready-to-use Terraform project for each sandbox
+that we manage.
 
 ## Using a Sandbox
 
-To use one of our managed sandboxes without additional setup, simply add a sandbox config to your app that references this repo. For example, to use the `aws-eks` sandbox:
+To use one of our managed sandboxes without additional setup, simply add a
+sandbox config to your app that references this repo. For example, to use the
+`aws-eks` sandbox:
 
 ```hcl
 resource "nuon_app_sandbox" "main" {
@@ -21,7 +27,8 @@ resource "nuon_app_sandbox" "main" {
 }
 ```
 
-The `branch` attribute will accept any valid Git ref, including a commit sha or tag.
+The `branch` attribute will accept any valid Git ref, including a commit sha or
+tag.
 
 Reference the documentation for each sandbox module for detailed usage examples.
 

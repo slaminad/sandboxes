@@ -1,0 +1,57 @@
+# generated on: {{ .GeneratedOn }}
+Parameters:
+  RoleName:
+    Type: String
+    Default: "nuon-aws-ecs-byovpc-install-access"
+    Description: "Enter a name for the install role"
+
+Outputs:
+  RoleARN:
+    Description: IAM Role ARN
+    Value: !GetAtt InstallRole.Arn
+
+Resources:
+
+  InstallRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Ref: RoleName
+      Tags:
+        - Key: "managed-by"
+          Value: "nuon"
+        - Key: "nuon-sandbox-type"
+          Value: "aws-ecs-byovpc"
+      AssumeRolePolicyDocument:
+        Statement:
+{{ .TrustPolicy | indent 10 }}
+
+  ProvisionPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub
+        - nuon-provision-${RoleName}
+        - RoleName: !Ref RoleName
+      Roles:
+        - !Ref InstallRole
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Resource: "*"
+            Action: {{ range .ProvisionPolicyPermissions }}
+              - {{ . }}{{ end }}
+
+  DeprovisionPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub
+        - nuon-deprovision-${RoleName}
+        - RoleName: !Ref RoleName
+      Roles:
+        - !Ref InstallRole
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Resource: "*"
+            Action: {{ range .DeprovisionPolicyPermissions }}
+              - {{ . }}{{ end }}
