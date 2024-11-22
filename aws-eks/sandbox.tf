@@ -1,6 +1,6 @@
 module "sandbox" {
   source  = "nuonco/eks-sandbox/aws"
-  version = "1.4.1"
+  version = "1.4.2"
 
   install_name          = var.install_name
   cluster_name          = var.cluster_name
@@ -20,13 +20,4 @@ module "sandbox" {
   tags                              = var.tags
   enable_nginx_ingress_controller   = var.enable_nginx_ingress_controller
   runner_install_role               = var.runner_install_role
-
-  # Need to explicitly pass in providers, because of no_tags provider.
-  providers = {
-    aws         = aws
-    aws.no_tags = aws.no_tags
-    helm        = helm
-    kubectl     = kubectl
-    kubernetes  = kubernetes
-  }
 }

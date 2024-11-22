@@ -15,12 +15,6 @@ provider "aws" {
   }
 }
 
-# hack. see eks.tf for more details
-provider "aws" {
-  region = local.install_region
-  alias  = "no_tags"
-}
-
 provider "kubernetes" {
   host                   = module.sandbox.cluster.endpoint
   cluster_ca_certificate = base64decode(module.sandbox.cluster.certificate_authority_data)
