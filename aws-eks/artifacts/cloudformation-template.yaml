@@ -1,4 +1,4 @@
-Parameters:
+rarameters:
   RoleName:
     Type: String
     Default: "nuon-aws-eks-install-access"
@@ -55,6 +55,7 @@ Resources:
               - ec2:AttachInternetGateway
               - ec2:AuthorizeSecurityGroupEgress
               - ec2:AuthorizeSecurityGroupIngress
+              - ec2:AuthorizeSecurityGroupIngress
               - ec2:CreateInternetGateway
               - ec2:CreateLaunchTemplate
               - ec2:CreateLaunchTemplateVersion
@@ -67,6 +68,7 @@ Resources:
               - ec2:CreateTags
               - ec2:CreateVpc
               - ec2:DescribeAddresses
+              - ec2:DescribeAddressesAttribute
               - ec2:DescribeAvailabilityZones
               - ec2:DescribeInternetGateways
               - ec2:DescribeLaunchTemplateVersions
@@ -217,6 +219,7 @@ Resources:
               - ecr:DeleteRepository
               - ecr:DescribeRepositories
               - ecr:ListTagsForResource
+              - ecr:UntagResource
               - eks:DeleteAccessEntry
               - eks:DeleteAddon
               - eks:DeleteCluster
@@ -227,6 +230,7 @@ Resources:
               - eks:DisassociateAccessPolicy
               - eks:ListAccessEntries
               - eks:ListAssociatedAccessPolicies
+              - eks:UntagResource
               - iam:DeleteOpenIDConnectProvider
               - iam:DeletePolicy
               - iam:DeletePolicyVersion
@@ -252,6 +256,7 @@ Resources:
               - kms:ListResourceTags
               - kms:RetireGrant
               - kms:ScheduleKeyDeletion
+              - kms:UntagResource
               - logs:DeleteLogGroup
               - logs:DescribeLogGroups
               - logs:ListTagsForResource
