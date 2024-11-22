@@ -1,4 +1,4 @@
-rarameters:
+Parameters:
   RoleName:
     Type: String
     Default: "nuon-aws-eks-install-access"
