@@ -17,7 +17,7 @@ sandbox config to your app that references this repo. For example, to use the
 ```hcl
 resource "nuon_app_sandbox" "main" {
   app_id = nuon_app.main.id
-  terraform_version = "v1.6.3"
+  terraform_version = "v1.7.5"
 
   public_repo = {
     repo = "nuonco/sandboxes"
