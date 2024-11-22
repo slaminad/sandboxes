@@ -77,6 +77,7 @@ Resources:
               - ec2:DescribeSecurityGroupReferences
               - ec2:DescribeSecurityGroupRules
               - ec2:DescribeSecurityGroups
+              - ec2:DescribeSecurityGroups
               - ec2:DescribeSubnets
               - ec2:DescribeTags
               - ec2:DescribeVpcAttribute
@@ -149,6 +150,7 @@ Resources:
               - kms:UntagResource
               - logs:CreateLogGroup
               - logs:DescribeLogGroups
+              - logs:ListTagsForResource
               - logs:ListTagsLogGroup
               - logs:PutRetentionPolicy
               - logs:TagLogGroup
@@ -252,7 +254,9 @@ Resources:
               - kms:ScheduleKeyDeletion
               - logs:DeleteLogGroup
               - logs:DescribeLogGroups
+              - logs:ListTagsForResource
               - logs:ListTagsLogGroup
+              - logs:UntagResource
               - route53:ChangeTagsForResource
               - route53:DeleteHostedZone
               - route53:GetDNSSEC
