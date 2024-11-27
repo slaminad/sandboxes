@@ -4,6 +4,10 @@ Parameters:
     Type: String
     Default: "nuon-aws-eks-install-access"
     Description: "Enter a name for the install role"
+  DelegationRoleARN:
+    Type: String
+    Default: ""
+    Description: "ARN for the role that will be assumed by roles in the trust policy."
 
 Outputs:
   RoleARN:
@@ -25,26 +29,9 @@ Resources:
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
+            Action: sts:AssumeRole
             Principal:
-              AWS: arn:aws:iam::676549690856:root
-            Action:
-            - sts:AssumeRole
-          - Effect: Allow
-            Principal:
-              AWS: arn:aws:iam::007754799877:root
-            Action:
-            - sts:AssumeRole
-          - Effect: Allow
-            Principal:
-              AWS: arn:aws:iam::814326426574:root
-            Action:
-            - sts:AssumeRole
-          - Effect: Allow
-            Principal:
-              AWS: arn:aws:iam::766121324316:root
-            Action:
-            - sts:AssumeRole
-          
+              AWS: !Ref DelegationRoleARN
 
   ProvisionPolicy:
     Type: AWS::IAM::Policy
