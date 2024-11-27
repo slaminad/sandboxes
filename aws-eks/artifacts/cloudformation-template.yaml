@@ -1,4 +1,4 @@
-# generated on: 2024-11-26 22:14:04.464466 -0600 CST m=+0.017318959
+# generated on: 2024-11-27 10:52:20.849229 -0600 CST m=+0.012694001
 Parameters:
   RoleName:
     Type: String
@@ -190,11 +190,24 @@ Resources:
             Resource: "*"
             Action: 
               - ec2:DeleteNetworkAclEntry
+              - ecr:UntagResource
+              - eks:ListAccessEntries
+              - eks:DescribeAccessEntry
+              - eks:UpdateAccessEntry
               - eks:DeleteAddon
+              - eks:DescribeAddon
+              - eks:ListAddons
               - eks:DeleteCluster
               - eks:DescribeCluster
               - eks:DeleteNodegroup
               - eks:DescribeNodegroup
+              - eks:UntagResource
+              - eks:ListTagsForResource
+              - iam:UntagPolicy
+              - iam:UntagRole
+              - kms:UntagResource
+              - logs:UntagResource
+              - logs:ListTagsForResource
               - ec2:DeleteInternetGateway
               - ec2:DeleteLaunchTemplate
               - ec2:DeleteLaunchTemplateVersions

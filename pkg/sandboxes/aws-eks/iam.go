@@ -51,11 +51,27 @@ var ProvisionPolicy = perms.Policy{
 // deprovision role permissions specific to this sandbox
 var DeprovisionPermissions = append([]string{
 	"ec2:DeleteNetworkAclEntry",
+	"ecr:UntagResource",
+	"eks:ListAccessEntries",
+	"eks:DeleteAccessEntry",
+	"eks:DescribeAccessEntry",
+	"eks:UpdateAccessEntry",
+	"eks:DisassociateAccessPolicy",
 	"eks:DeleteAddon",
+	"eks:DescribeAddon",
+	"eks:ListAddons",
+	"eks:ListAssociatedAccessPolicies",
 	"eks:DeleteCluster",
 	"eks:DescribeCluster",
 	"eks:DeleteNodegroup",
 	"eks:DescribeNodegroup",
+	"eks:UntagResource",
+	"eks:ListTagsForResource",
+	"iam:UntagPolicy",
+	"iam:UntagRole",
+	"kms:UntagResource",
+	"logs:UntagResource",
+	"logs:ListTagsForResource",
 }, perms.BaseDeprovisionPermissions...)
 
 // Full deprovision role policy for this sandbox
