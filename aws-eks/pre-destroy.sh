@@ -12,5 +12,5 @@ echo ' install id: '$NUON_INSTALL_ID
 echo
 
 
-echo "deleting install workspace"
-kubectl delete namespace $NUON_INSTALL_ID
+echo "list deployments in install namespace"
+kubectl -n $NUON_INSTALL_ID get deployments -o json
