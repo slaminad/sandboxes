@@ -1,4 +1,4 @@
-# generated on: 2024-11-27 10:52:20.849229 -0600 CST m=+0.012694001
+# generated on: 2024-12-05 10:02:28.603806 -0600 CST m=+0.013921251
 Parameters:
   RoleName:
     Type: String
@@ -192,11 +192,14 @@ Resources:
               - ec2:DeleteNetworkAclEntry
               - ecr:UntagResource
               - eks:ListAccessEntries
+              - eks:DeleteAccessEntry
               - eks:DescribeAccessEntry
               - eks:UpdateAccessEntry
+              - eks:DisassociateAccessPolicy
               - eks:DeleteAddon
               - eks:DescribeAddon
               - eks:ListAddons
+              - eks:ListAssociatedAccessPolicies
               - eks:DeleteCluster
               - eks:DescribeCluster
               - eks:DeleteNodegroup

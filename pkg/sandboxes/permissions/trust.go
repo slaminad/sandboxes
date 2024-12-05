@@ -5,7 +5,7 @@ type Principal struct {
 }
 
 type Statement struct {
-	Sid       string     `json:"Sid,omitempty" yaml:"Sid,omitempty"`
+	Sid       string     `json:"Sid" yaml:"Sid,omitempty"`
 	Effect    string     `json:"Effect" yaml:"Effect"`
 	Principal *Principal `json:"Principal,omitempty" yaml:"Principal,omitempty"`
 	Resource  string     `json:"Resource,omitempty" yaml:"Resource,omitempty"`

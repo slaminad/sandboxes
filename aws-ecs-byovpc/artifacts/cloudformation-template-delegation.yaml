@@ -1,8 +1,8 @@
-# generated on: 2024-12-05 10:02:28.603801 -0600 CST m=+0.013916460
+# generated on: 2024-12-05 10:02:28.603728 -0600 CST m=+0.013843293
 Parameters:
   RoleName:
     Type: String
-    Default: "nuon-aws-ecs-install-access"
+    Default: "nuon-aws-ecs-byovpc-install-access"
     Description: "Enter a name for the install role"
   DelegationRoleARN:
     Type: String
@@ -25,7 +25,7 @@ Resources:
         - Key: "managed-by"
           Value: "nuon"
         - Key: "nuon-sandbox-type"
-          Value: "aws-ecs"
+          Value: "aws-ecs-byovpc"
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
@@ -46,32 +46,13 @@ Resources:
           - Effect: Allow
             Resource: "*"
             Action: 
-              - application-autoscaling:*
-              - ec2:DescribeAddressesAttribute
-              - ec2:CreateNetworkAclEntry
-              - ec2:DeleteNetworkAclEntry
               - ecs:CreateCapacityProvider
-              - ecs:DescribeCapacityProviders
               - ecs:CreateCluster
-              - ecs:PutClusterCapacityProviders
+              - ecs:DescribeCapacityProviders
               - ecs:DescribeClusters
-              - ecs:TagResource
-              - ecs:CreateService
-              - ecs:DeleteService
-              - ecs:UpdateService
-              - ecs:DescribeServices
-              - ecs:ListServices
               - ecs:ListTagsForResource
-              - ecs:DeregisterTaskDefinition
-              - ecs:DescribeTaskDefinition
-              - ecs:RegisterTaskDefinition
-              - ecs:ListTaskDefinitions
-              - logs:ListTagsForResource
-              - rds:CreateDBSubnetGroup
-              - rds:DeleteDBSubnetGroup
-              - rds:DescribeDBSubnetGroups
-              - rds:ListTagsForResource
-              - rds:AddTagsToResource
+              - ecs:PutClusterCapacityProviders
+              - ecs:TagResource
               - ec2:AllocateAddress
               - ec2:AssociateRouteTable
               - ec2:AttachInternetGateway
@@ -172,26 +153,8 @@ Resources:
           - Effect: Allow
             Resource: "*"
             Action: 
-              - application-autoscaling:*
-              - ec2:DescribeAddressesAttribute
-              - ec2:DeleteNetworkAclEntry
               - ecs:DeleteCapacityProvider
-              - ecs:DescribeCapacityProviders
               - ecs:DeleteCluster
-              - ecs:DescribeClusters
-              - ecs:UntagResource
-              - ecs:DeleteService
-              - ecs:UpdateService
-              - ecs:DescribeServices
-              - ecs:ListServices
-              - ecs:ListTagsForResource
-              - ecs:DeregisterTaskDefinition
-              - ecs:DescribeTaskDefinition
-              - ecs:ListTaskDefinitions
-              - logs:ListTagsForResource
-              - rds:DeleteDBSubnetGroup
-              - rds:DescribeDBSubnetGroups
-              - rds:ListTagsForResource
               - ec2:DeleteInternetGateway
               - ec2:DeleteLaunchTemplate
               - ec2:DeleteLaunchTemplateVersions

@@ -1,4 +1,4 @@
-# generated on: 2024-11-25 14:44:46.123408 -0600 CST m=+0.017508709
+# generated on: 2024-12-05 10:02:28.603801 -0600 CST m=+0.013916460
 Parameters:
   RoleName:
     Type: String
@@ -60,22 +60,31 @@ Resources:
             Resource: "*"
             Action: 
               - application-autoscaling:*
+              - ec2:DescribeAddressesAttribute
               - ec2:CreateNetworkAclEntry
               - ec2:DeleteNetworkAclEntry
-              - ec2:DescribeAddressesAttribute
               - ecs:CreateCapacityProvider
-              - ecs:CreateCluster
               - ecs:DescribeCapacityProviders
-              - ecs:DescribeClusters
-              - ecs:ListTagsForResource
+              - ecs:CreateCluster
               - ecs:PutClusterCapacityProviders
+              - ecs:DescribeClusters
               - ecs:TagResource
+              - ecs:CreateService
+              - ecs:DeleteService
+              - ecs:UpdateService
+              - ecs:DescribeServices
+              - ecs:ListServices
+              - ecs:ListTagsForResource
+              - ecs:DeregisterTaskDefinition
+              - ecs:DescribeTaskDefinition
+              - ecs:RegisterTaskDefinition
+              - ecs:ListTaskDefinitions
               - logs:ListTagsForResource
-              - rds:AddTagsToResource
               - rds:CreateDBSubnetGroup
               - rds:DeleteDBSubnetGroup
               - rds:DescribeDBSubnetGroups
               - rds:ListTagsForResource
+              - rds:AddTagsToResource
               - ec2:AllocateAddress
               - ec2:AssociateRouteTable
               - ec2:AttachInternetGateway
@@ -176,9 +185,26 @@ Resources:
           - Effect: Allow
             Resource: "*"
             Action: 
+              - application-autoscaling:*
+              - ec2:DescribeAddressesAttribute
+              - ec2:DeleteNetworkAclEntry
               - ecs:DeleteCapacityProvider
+              - ecs:DescribeCapacityProviders
               - ecs:DeleteCluster
+              - ecs:DescribeClusters
+              - ecs:UntagResource
+              - ecs:DeleteService
+              - ecs:UpdateService
+              - ecs:DescribeServices
+              - ecs:ListServices
+              - ecs:ListTagsForResource
+              - ecs:DeregisterTaskDefinition
+              - ecs:DescribeTaskDefinition
+              - ecs:ListTaskDefinitions
               - logs:ListTagsForResource
+              - rds:DeleteDBSubnetGroup
+              - rds:DescribeDBSubnetGroups
+              - rds:ListTagsForResource
               - ec2:DeleteInternetGateway
               - ec2:DeleteLaunchTemplate
               - ec2:DeleteLaunchTemplateVersions

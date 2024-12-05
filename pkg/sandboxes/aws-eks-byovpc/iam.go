@@ -5,18 +5,18 @@ import perms "github.com/nuonco/sandboxes/pkg/sandboxes/permissions"
 // provision role permissions specific to this sandbox
 var ProvisionPermissions = append([]string{
 	"eks:CreateAddon",
-	"eks:CreateCluster",
-	"eks:CreateNodegroup",
 	"eks:DescribeAddon",
 	"eks:DescribeAddonConfiguration",
 	"eks:DescribeAddonVersions",
-	"eks:DescribeCluster",
-	"eks:DescribeNodegroup",
-	"eks:DescribeUpdate",
 	"eks:ListAddons",
-	"eks:ListTagsForResource",
-	"eks:TagResource",
+	"eks:CreateCluster",
+	"eks:DescribeCluster",
+	"eks:CreateNodegroup",
+	"eks:DescribeNodegroup",
 	"eks:UpdateNodegroupVersion",
+	"eks:TagResource",
+	"eks:ListTagsForResource",
+	"eks:DescribeUpdate",
 	"logs:ListTagsForResource",
 }, perms.BaseProvisionPermissions...)
 
@@ -36,8 +36,8 @@ var ProvisionPolicy = perms.Policy{
 var DeprovisionPermissions = append([]string{
 	"eks:DeleteAddon",
 	"eks:DeleteCluster",
-	"eks:DeleteNodegroup",
 	"eks:DescribeCluster",
+	"eks:DeleteNodegroup",
 	"eks:DescribeNodegroup",
 }, perms.BaseDeprovisionPermissions...)
 
