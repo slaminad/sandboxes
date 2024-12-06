@@ -19,6 +19,7 @@
         "eks:ListAssociatedAccessPolicies",
         "eks:DeleteCluster",
         "eks:DescribeCluster",
+        "eks:UpdateClusterVersion",
         "eks:DeleteNodegroup",
         "eks:DescribeNodegroup",
         "eks:UntagResource",

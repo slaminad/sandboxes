@@ -24,6 +24,7 @@
         "eks:ListAssociatedAccessPolicies",
         "eks:CreateCluster",
         "eks:DescribeCluster",
+        "eks:UpdateClusterVersion",
         "eks:CreateNodegroup",
         "eks:DescribeNodegroup",
         "eks:UpdateNodegroupVersion",
