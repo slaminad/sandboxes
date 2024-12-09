@@ -5,6 +5,10 @@ import perms "github.com/nuonco/sandboxes/pkg/sandboxes/permissions"
 // provision role permissions specific to this sandbox
 var ProvisionPermissions = append([]string{
 	"application-autoscaling:*",
+	"acm:DescribeCertificate",
+	"acm:RequestCertificate",
+	"acm:ListTagsForCertificate",
+	"acm:AddTagsToCertificate",
 	"ec2:DescribeAddressesAttribute",
 	"ec2:CreateNetworkAclEntry",
 	"ec2:DeleteNetworkAclEntry",
@@ -24,12 +28,26 @@ var ProvisionPermissions = append([]string{
 	"ecs:DescribeTaskDefinition",
 	"ecs:RegisterTaskDefinition",
 	"ecs:ListTaskDefinitions",
+	"elasticloadbalancing:CreateLoadBalancer",
+	"elasticloadbalancing:DeleteLoadBalancer",
+	"elasticloadbalancing:DescribeLoadBalancerAttributes",
+	"elasticloadbalancing:ModifyLoadBalancerAttributes",
+	"elasticloadbalancing:DescribeLoadBalancers",
+	"elasticloadbalancing:AddTags",
+	"elasticloadbalancing:DescribeTags",
+	"elasticloadbalancing:CreateTargetGroup",
+	"elasticloadbalancing:DescribeTargetGroupAttributes",
+	"elasticloadbalancing:ModifyTargetGroupAttributes",
+	"elasticloadbalancing:DescribeTargetGroups",
+	"kms:CreateGrant",
 	"logs:ListTagsForResource",
 	"rds:CreateDBSubnetGroup",
 	"rds:DeleteDBSubnetGroup",
 	"rds:DescribeDBSubnetGroups",
 	"rds:ListTagsForResource",
 	"rds:AddTagsToResource",
+	"servicediscovery:CreateHttpNamespace",
+	"servicediscovery:GetOperation",
 }, perms.BaseProvisionPermissions...)
 
 // Full provision rol policy for this sandbox

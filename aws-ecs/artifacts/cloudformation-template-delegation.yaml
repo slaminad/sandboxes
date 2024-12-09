@@ -1,4 +1,4 @@
-# generated on: 2024-12-06 14:10:45.819383 -0600 CST m=+0.008165209
+# generated on: 2024-12-09 17:09:12.584085 -0600 CST m=+0.013445126
 Parameters:
   RoleName:
     Type: String
@@ -47,6 +47,10 @@ Resources:
             Resource: "*"
             Action: 
               - application-autoscaling:*
+              - acm:DescribeCertificate
+              - acm:RequestCertificate
+              - acm:ListTagsForCertificate
+              - acm:AddTagsToCertificate
               - ec2:DescribeAddressesAttribute
               - ec2:CreateNetworkAclEntry
               - ec2:DeleteNetworkAclEntry
@@ -66,12 +70,26 @@ Resources:
               - ecs:DescribeTaskDefinition
               - ecs:RegisterTaskDefinition
               - ecs:ListTaskDefinitions
+              - elasticloadbalancing:CreateLoadBalancer
+              - elasticloadbalancing:DeleteLoadBalancer
+              - elasticloadbalancing:DescribeLoadBalancerAttributes
+              - elasticloadbalancing:ModifyLoadBalancerAttributes
+              - elasticloadbalancing:DescribeLoadBalancers
+              - elasticloadbalancing:AddTags
+              - elasticloadbalancing:DescribeTags
+              - elasticloadbalancing:CreateTargetGroup
+              - elasticloadbalancing:DescribeTargetGroupAttributes
+              - elasticloadbalancing:ModifyTargetGroupAttributes
+              - elasticloadbalancing:DescribeTargetGroups
+              - kms:CreateGrant
               - logs:ListTagsForResource
               - rds:CreateDBSubnetGroup
               - rds:DeleteDBSubnetGroup
               - rds:DescribeDBSubnetGroups
               - rds:ListTagsForResource
               - rds:AddTagsToResource
+              - servicediscovery:CreateHttpNamespace
+              - servicediscovery:GetOperation
               - ec2:AllocateAddress
               - ec2:AssociateRouteTable
               - ec2:AttachInternetGateway
