@@ -4,7 +4,7 @@ set -u
 set -e
 
 echo "[pre-destroy] preparing to execute pre-destroy script"
-role=aws sts get-caller-identity | jq '.Arn'
+role=`aws sts get-caller-identity | jq -r '.Arn'`
 
 echo "[pre-destroy] region: "$AWS_REGION" role: "$role
 
