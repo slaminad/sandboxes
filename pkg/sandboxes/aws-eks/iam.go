@@ -25,6 +25,7 @@ var ProvisionPermissions = append([]string{
 	"eks:UpdateClusterVersion",
 	"eks:CreateNodegroup",
 	"eks:DescribeNodegroup",
+	"eks:UpdateNodegroupConfig",
 	"eks:UpdateNodegroupVersion",
 	"eks:TagResource",
 	"eks:UntagResource",

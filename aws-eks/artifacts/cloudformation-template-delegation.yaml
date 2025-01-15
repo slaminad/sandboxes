@@ -1,4 +1,4 @@
-# generated on: 2024-12-06 14:10:45.819389 -0600 CST m=+0.008171376
+# generated on: 2025-01-15 15:41:53.949015 -0600 CST m=+0.008898876
 Parameters:
   RoleName:
     Type: String
@@ -67,6 +67,7 @@ Resources:
               - eks:UpdateClusterVersion
               - eks:CreateNodegroup
               - eks:DescribeNodegroup
+              - eks:UpdateNodegroupConfig
               - eks:UpdateNodegroupVersion
               - eks:TagResource
               - eks:UntagResource
