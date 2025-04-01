@@ -5,175 +5,168 @@
 set -u
 set -o pipefail
 
+TAG_KEY="nuon_install_id"
+TAG_VALUE="${NUON_INSTALL_ID:-}"  # Defaults to env var
+DRY_RUN="${DRY_RUN:-false}"  # Defaults to false if not set
 
-echo "executing error-destroy script"
-echo
-echo '     region: '$AWS_REGION
-echo '    profile: '$AWS_PROFILE
-echo ' install id: '$NUON_INSTALL_ID
-echo
+# Usage function
+usage() {
+    echo "Usage: NUON_INSTALL_ID=<value> $0"
+    echo "Set DRY_RUN=true in the environment for dry-run mode."
+    exit 1
+}
 
+if [ -z "$TAG_VALUE" ]; then
+    echo "Error: NUON_INSTALL_ID is required."
+    usage
+fi
 
-echo "ensuring AWS is setup"
-aws sts get-caller-identity > /dev/null
+# Determine dry-run behavior
+if [ "$DRY_RUN" = "true" ]; then
+    echo "Running in DRY-RUN mode. No resources will be deleted."
+    RUN_CMD_PREFIX="echo [DRY-RUN]"
+else
+    RUN_CMD_PREFIX=""
+fi
+
+run_cmd() {
+    $RUN_CMD_PREFIX "$@"
+}
+
+echo "Executing cleanup script"
+echo "Region: $AWS_REGION"
+echo "Profile: $AWS_PROFILE"
+echo "Install ID: $TAG_VALUE"
+
+aws sts get-caller-identity > /dev/null || { echo "AWS credentials not set up"; exit 1; }
+
+# Delete EKS Clusters
+#
+# Delete EKS Clusters (including Node Groups)
+#
+echo "Fetching EKS clusters with tag $TAG_KEY=$TAG_VALUE..."
+CLUSTERS=$(aws eks list-clusters --query "clusters[]" --output text --no-cli-pager)
+
+for CLUSTER in $CLUSTERS; do
+    TAGS=$(aws eks describe-cluster --name "$CLUSTER" --query "cluster.tags" --output json 2>/dev/null)
+    if echo "$TAGS" | grep -q "\"$TAG_KEY\": \"$TAG_VALUE\""; then
+        echo "Deleting node groups for cluster: $CLUSTER..."
+        NODE_GROUPS=$(aws eks list-nodegroups --cluster-name "$CLUSTER" --query "nodegroups[]" --output text)
+
+        for NODE_GROUP in $NODE_GROUPS; do
+            echo "Deleting node group: $NODE_GROUP in cluster: $CLUSTER..."
+            run_cmd aws eks delete-nodegroup --cluster-name "$CLUSTER" --nodegroup-name "$NODE_GROUP" --no-cli-pager
+            echo "Waiting for node group $NODE_GROUP to be deleted..."
+            run_cmd aws eks wait nodegroup-deleted --cluster-name "$CLUSTER" --nodegroup-name "$NODE_GROUP" --no-cli-pager
+        done
+
+        echo "Deleting EKS cluster: $CLUSTER..."
+        run_cmd aws eks delete-cluster --name "$CLUSTER" --no-cli-pager
+        echo "Waiting for EKS cluster $CLUSTER to be deleted..."
+        run_cmd aws eks wait cluster-deleted --name "$CLUSTER" --no-cli-pager
+    fi
+done
 
 #
-# Nat Gateways
+# Fetch VPCs
 #
+echo "Fetching VPCs with tag Name=$TAG_VALUE..."
+VPC_IDS=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=$TAG_VALUE" | jq -r '.Vpcs[].VpcId')
 
-echo "looking for NAT Gateways"
-NAT_GATEWAYS=$(aws ec2 describe-nat-gateways --filter Name=tag:Name,Values=$NUON_INSTALL_ID*)
-echo $NAT_GATEWAYS | jq -r '.NatGateways[].NatGatewayId' | while read -r nat_gateway_id; do
-  echo "deleting NAT Gateway "$nat_gateway_id
-  aws ec2 delete-nat-gateway --nat-gateway-id $nat_gateway_id
+if [[ -z "$VPC_IDS" ]]; then
+    echo "No VPCs found for $TAG_VALUE."
+    exit 0
+fi
+
+echo "Found VPCs: $VPC_IDS"
+
+#
+echo "Fetching ALBs tagged with nuon_install_id=$TAG_VALUE..."
+LB_ARNS=$(aws elbv2 describe-load-balancers --query "LoadBalancers[].LoadBalancerArn" --output text --no-cli-pager)
+
+for LB_ARN in $LB_ARNS; do
+    TAGS=$(aws elbv2 describe-tags --resource-arns "$LB_ARN" --query "TagDescriptions[].Tags[]" --output json)
+    
+    if echo "$TAGS" | jq -e 'map(select(.Key == "nuon_install_id" and .Value == "'"$TAG_VALUE"'")) | length > 0' > /dev/null; then
+        echo "Deleting Load Balancer $LB_ARN..."
+        run_cmd aws elbv2 delete-load-balancer --load-balancer-arn "$LB_ARN" --no-cli-pager
+        echo "Waiting for Load Balancer $LB_ARN to be deleted..."
+        run_cmd aws elbv2 wait load-balancers-deleted --load-balancer-arns "$LB_ARN"
+    fi
+done
+
+echo "ALB cleanup complete."
+#
+# Delete NAT Gateways before ENIs
+#
+echo "Looking for NAT Gateways..."
+aws ec2 describe-nat-gateways --filter "Name=tag:Name,Values=$TAG_VALUE*" | jq -r '.NatGateways[].NatGatewayId' | while read -r nat_gateway_id; do
+    echo "Deleting NAT Gateway $nat_gateway_id"
+    run_cmd aws ec2 delete-nat-gateway --nat-gateway-id "$nat_gateway_id" --no-cli-pager
+    echo "Waiting for NAT Gateway $nat_gateway_id to be deleted..."
+    run_cmd aws ec2 wait nat-gateway-available --nat-gateway-ids "$nat_gateway_id"
 done
 
 #
 # VPC Cleanup: Resources
 #
+delete_vpc_resources() {
+    local vpc_id="$1"
+    echo "[ $vpc_id ] Cleaning up resources..."
 
-function delete_vpc_subnets() {
-  SNS=`aws ec2 describe-subnets --filters 'Name=vpc-id,Values='$vpc_id | jq -r '.Subnets'`
-  echo $SNS | jq -r '.[].SubnetId' | while read sn_id; do
-    echo " - deleting subnet "$sn_id
-    aws ec2 delete-subnet --subnet-id $sn_id
-  done
+    # Delete Network Interfaces (ENIs)
+    echo "Looking for Network Interfaces in VPC $vpc_id..."
+    aws ec2 describe-network-interfaces --filters "Name=vpc-id,Values=$vpc_id" | jq -r '.NetworkInterfaces[].NetworkInterfaceId' | while read -r eni_id; do
+        echo " - Deleting ENI $eni_id"
+        run_cmd aws ec2 delete-network-interface --network-interface-id "$eni_id" --no-cli-pager
+    done
+
+    # Delete Security Groups
+    aws ec2 describe-security-groups --filters "Name=vpc-id,Values=$vpc_id" | jq -c '.SecurityGroups[]' | while read -r sg; do
+        sg_id=$(echo "$sg" | jq -r '.GroupId')
+
+        aws ec2 describe-security-group-rules --filters "Name=group-id,Values=$sg_id" | jq -c '.SecurityGroupRules[]' | while read -r rule; do
+            rule_id=$(echo "$rule" | jq -r '.SecurityGroupRuleId')
+            direction=$(echo "$rule" | jq -r '.IsEgress')
+            if [[ "$direction" == "true" ]]; then
+                run_cmd aws ec2 revoke-security-group-egress --group-id "$sg_id" --security-group-rule-ids "$rule_id" --no-cli-pager
+            else
+                run_cmd aws ec2 revoke-security-group-ingress --group-id "$sg_id" --security-group-rule-ids "$rule_id" --no-cli-pager
+            fi
+        done
+
+        echo " - Deleting security group $sg_id"
+        run_cmd aws ec2 delete-security-group --group-id "$sg_id" --no-cli-pager
+    done
+
+    # Delete Internet Gateways
+    aws ec2 describe-internet-gateways --filters "Name=attachment.vpc-id,Values=$vpc_id" | jq -r '.InternetGateways[].InternetGatewayId' | while read -r ig_id; do
+        run_cmd aws ec2 detach-internet-gateway --internet-gateway-id "$ig_id" --vpc-id "$vpc_id"
+        run_cmd aws ec2 delete-internet-gateway --internet-gateway-id "$ig_id" --no-cli-pager
+    done
+
+    # Delete Subnets
+    aws ec2 describe-subnets --filters "Name=vpc-id,Values=$vpc_id" | jq -r '.Subnets[].SubnetId' | while read -r sn_id; do
+        run_cmd aws ec2 delete-subnet --subnet-id "$sn_id" --no-cli-pager
+    done
+
+    # Delete Route Tables
+    aws ec2 describe-route-tables --filters "Name=vpc-id,Values=$vpc_id" | jq -r '.RouteTables[].RouteTableId' | while read -r rt_id; do
+        run_cmd aws ec2 delete-route-table --route-table-id "$rt_id" --no-cli-pager
+    done
 }
 
-function delete_vpc_security_groups() {
-  SGS=`aws ec2 describe-security-groups --filters 'Name=vpc-id,Values='$vpc_id | jq -r '.SecurityGroups'`
-  echo $SGS | jq -r '.[].GroupId' | while read sg_id; do
-    echo " - deleting sg "$sg_id
-    aws ec2 delete-security-group --group-id $sg_id
-  done
-}
-
-function disassociate_vpc_security_groups() {
-  # useful for SGs that reference each other
-  # in the context of this script, it should only be run near then end right before we delete the sg then vpc.
-  # it exists only because there are a small number of SGs that cannot be deletd otherwise.
-  SGS=`aws ec2 describe-security-groups --filters 'Name=vpc-id,Values='$vpc_id | jq -r '.SecurityGroups'`
-  echo $SGS | jq -c '.[]' | while read sg; do
-    sg_name=`echo "$sg" | jq -r '.Name'`
-    if [[ "$sg_name" == "default" ]]; then
-      echo "politely refusing to delete default vpc security group"
-    else
-      sg_id=`echo "$sg" | jq -r '.GroupId'`
-      group_ids=`aws ec2 describe-security-group-rules --filters 'Name=group-id,Values='$sg_id | jq -r '.SecurityGroupRules.[].SecurityGroupRuleId'`
-      aws ec2 revoke-security-group-ingress --group-id $sg_id --security-group-rule-ids $group_ids
-    fi
-  done
-}
-
-function delete_vpc_resources() {
-  # deletes all of the resources tagged with a specific VPC.
-  # this is intended to be run multiple times.
-  vpc_id=$1
-  echo "["$vpc_id"] Looking for resources"
-
-  delete_vpc_security_groups $vpc_id
-
-  IGWS=`aws ec2 describe-internet-gateways --filters 'Name=attachment.vpc-id,Values='$vpc_id | jq -r '.InternetGateways'`
-  echo $IGWS | jq -r '.[].InternetGatewayId' | while read ig_id; do
-    echo " - detaching internet gateway "$ig_id
-    aws ec2 detach-internet-gateway --internet-gateway-id $ig_id --vpc-id $vpc_id
-    echo " - deleting internet gateway "$ig_id
-    aws ec2 delete-internet-gateway --internet-gateway-id $ig_id
-  done
-
-  delete_vpc_subnets $vpc_id
-
-  NACLS=`aws ec2 describe-network-acls --filters 'Name=vpc-id,Values='$vpc_id | jq -r '.NetworkAcls'`
-  echo $NACLS | jq -r '.[].NetworkAclId' | while read na_id; do
-    echo "- deleting network acl "$na_id
-    aws ec2 delete-network-acl --network-acl-id $na_id
-  done
-
-  RTTBLS=`aws ec2 describe-route-tables --filters 'Name=vpc-id,Values='$vpc_id | jq -r '.RouteTables'`
-  echo $RTTBLS | jq -r '.[].RouteTableId' | while read rt_id; do
-    echo " - deleting route table "$rt_id
-    aws ec2 delete-route-table --route-table-id $rt_id
-  done
-
-  NGWS=`aws ec2 describe-nat-gateways --filter 'Name=vpc-id,Values='$vpc_id | jq -r '.NatGateways'`
-  echo $NGWS | jq -r '.[].NatGatewayId' | while read ngw_id; do
-    echo "- deleting nat gateway "$ngw_id
-    aws ec2 delete-nat-gateway --nat-gateway-id $ngw_id
-  done
-}
-
-echo "looking for vpc..."
-VPCS=$(aws ec2 \
-  describe-vpcs \
-  --filters Name=tag:Name,Values=$NUON_INSTALL_ID)
-
-echo $VPCS | jq -r '.Vpcs[].VpcId' | while read -r vpc_id ; do
-  delete_vpc_resources $vpc_id
+# Iterate over all VPCs and delete resources
+for vpc_id in $VPC_IDS; do
+    delete_vpc_resources "$vpc_id"
 done
 
 #
-# Load Balancers
+# Final VPC Cleanup
 #
-echo "looking for Load Balancers"
-NLBS=$(aws elbv2 describe-load-balancers | jq '.LoadBalancers')
-echo $NLBS | jq -r '.[].LoadBalancerArn' | while read -r lb_arn; do
-  tag_values=$(aws elbv2 describe-tags --resource-arn $lb_arn | jq -r '.TagDescriptions[].Tags.[].Value')
-  if [[ $tag_values == *"$NUON_INSTALL_ID"*  ]]; then
-    echo "deleting load balancer "$lb_arn
-    aws elbv2 delete-load-balancer --load-balancer-arn $lb_arn
-  fi
+for vpc_id in $VPC_IDS; do
+    echo "Deleting VPC $vpc_id"
+    run_cmd aws ec2 delete-vpc --vpc-id "$vpc_id" --no-cli-pager
 done
 
-echo "looking for loadbalancer security groups..."
-SGS=$(aws ec2 \
-  describe-security-groups \
-  --filters Name=tag:elbv2.k8s.aws/cluster,Values=$NUON_INSTALL_ID)
-
-echo $SGS | jq -r '.SecurityGroups[].GroupId' | while read -r sg_id ; do
-  echo "deleting security group $sg_id"
-  aws ec2 delete-security-group --group-id=$sg_id
-done
-
-#
-# ENIs
-#
-
-echo "looking for ENIs which were orphaned by vpc-cni plugin"
-ENIS=$(aws ec2 \
-  describe-network-interfaces \
-  --filters Name=tag:cluster.k8s.amazonaws.com/name,Values=$NUON_INSTALL_ID)
-
-echo $ENIS | jq -r '.NetworkInterfaces[].NetworkInterfaceId' | while read -r eni_id ; do
-  echo "deleting ENI $eni_id"
-  aws ec2 delete-network-interface --network-interface-id=$eni_id
-done
-
-#
-# Security Groups: Clean up remaining security groups
-#
-
-echo "looking for nuon security groups..."
-SGS=$(aws ec2 \
-  describe-security-groups \
-  --filters Name=tag:nuon_id,Values=$NUON_INSTALL_ID)
-
-echo $SGS | jq -r '.SecurityGroups[].GroupId' | while read -r sg_id ; do
-  echo "deleting security group $sg_id"
-  aws ec2 delete-security-group --group-id=$sg_id
-done
-
-#
-# VPC Cleanup: VPC
-#
-
-# clean up any resources we couldn't get to before
-echo $VPCS | jq -r '.Vpcs[].VpcId' | while read -r vpc_id ; do
-  disassociate_vpc_security_groups $vpc_id
-  delete_vpc_resources $vpc_id
-done
-
-echo $VPCS | jq -r '.Vpcs[].VpcId'
-echo $VPCS | jq -r '.Vpcs[].VpcId' | while read -r vpc_id ; do
-  echo "deleting vpc $vpc_id"
-  aws ec2 delete-vpc --vpc-id=$vpc_id
-done
+echo "Cleanup complete."
