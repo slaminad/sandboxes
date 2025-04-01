@@ -12,6 +12,7 @@ module "sandbox" {
   desired_size          = var.desired_size
   default_instance_type = var.default_instance_type
   additional_tags       = var.additional_tags
+  admin_access_role     = var.admin_access_role
 
   nuon_id                           = var.nuon_id
   region                            = var.region
